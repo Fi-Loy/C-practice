@@ -1,22 +1,23 @@
 //Note to next session:
 //Working on Chapter 3.7 Break and Continue
-//Chapter 2.9: Exercise 2-7. 
-/* Write a function invert(x,p,n) that returns x with
-** with the n bits that begin at position p inverted
-this is a change for testing
+//Chapter 2.9: Exercise 2-8. 
+/* Write a function rightrot(x,p,n) that returns the
+value of the integer x rotated to the right by n
+positions
 */
 
 #include <stdio.h>
+#include <math.h>
 
 unsigned getbits(unsigned x, int p, int n);
-unsigned invert(unsigned x, int p, int n);
+unsigned rightrot(unsigned x, int n);
 
 int main(){
 
     int x = 143014; 
 
-    //Expected result 143014 -> 143001
-    printf("%d -> %d\n", x, invert(x,10,7));
+    //Expected result 143014 -> 107242
+    printf("%d -> %d\n", x, rightrot(x,5));
 
 } 
 
@@ -24,17 +25,19 @@ unsigned getbits(unsigned x, int p, int n){
     return (x >> (p+1-n)) & ~(~0 << n); //(x,4,3)
 }
 
-unsigned invert(unsigned x, int p, int n){
-    /* Exercise takeaway: bit shifting by a negative
-    numbers is undefined in C, and will cause bugs.
-    Creating the mask with a bit length longer than
-    the position will lead to such errors
-    */
-    int mask = (~(-1 << n) << (p-n+1));
-    return ~(mask & x) & (mask | x);
+unsigned rightrot(unsigned x, int n){
+    /* Probably not the best implementation,
+    fun tho. would be worth seeing how this
+    is done properly in the future. */
+    int firstPlace = log2(x);
+    while(n > 0){
+        x = ((x & 1) << firstPlace) | (x >> 1);
+        n--;
+    }
+    return x;
 }
 
-//2.9 Exercises
+//2.9 Exercises : DONE
 //2.10 Exercises
 //Exercises to return to
 //3.3 else-if statements
