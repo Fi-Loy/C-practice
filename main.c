@@ -1,21 +1,21 @@
 //Note to next session:
-//Working on Chapter 3.6 Loops - Do While
-//Chapter 2.9: Exercise 2-6. 
-/* Write a function setbits(x,p,n,y) that returns x with
-** with the n bits that begin at position p set to the 
-** rightmost n bits of y, leaving the other bits unchanged.
+//Working on Chapter 3.7 Break and Continue
+//Chapter 2.9: Exercise 2-7. 
+/* Write a function invert(x,p,n) that returns x with
+** with the n bits that begin at position p inverted
 */
 
 #include <stdio.h>
 
 unsigned getbits(unsigned x, int p, int n);
-unsigned setbits(unsigned x, int p, int n, int y);
+unsigned invert(unsigned x, int p, int n);
 
 int main(){
 
-    int x = 143013; //143013 -> 141989
+    int x = 143014; 
 
-    printf("%d -> %d\n", x, setbits(x,7,4,13));
+    //Expected result 143014 -> 143001
+    printf("%d -> %d\n", x, invert(x,10,7));
 
 } 
 
@@ -23,12 +23,14 @@ unsigned getbits(unsigned x, int p, int n){
     return (x >> (p+1-n)) & ~(~0 << n); //(x,4,3)
 }
 
-unsigned setbits(unsigned x, int p, int n, int y){
-    int getSection = getbits(x, p, n);
-
-    return (x | (~(~0 << n) << (y-n+1))) & (~(~(~0 << n) << (y-n+1)) | (getSection << (y-n+1)));
-    //works, its ugly, but it works
-    //*it works for this instance, haven't tested any other case*
+unsigned invert(unsigned x, int p, int n){
+    /* Exercise takeaway: bit shifting by a negative
+    numbers is undefined in C, and will cause bugs.
+    Creating the mask with a bit length longer than
+    the position will lead to such errors
+    */
+    int mask = (~(-1 << n) << (p-n+1));
+    return ~(mask & x) & (mask | x);
 }
 
 //2.9 Exercises
