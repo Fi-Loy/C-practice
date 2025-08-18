@@ -1,40 +1,38 @@
 //Note to next session:
-//Working on Chapter 3.7 Break and Continue
-//Chapter 2.9: Exercise 2-8. 
-/* Write a function rightrot(x,p,n) that returns the
-value of the integer x rotated to the right by n
-positions
+//Working on Chapter 4 - Functions and Program Structure
+//Chapter 2.10: Exercise 2-9. 
+/* In a two's compliment system, x &= (x-1) deletes the 
+rightmost 1-bit in x. Explain why. Use this observation 
+to write a faster version of bitcount.
+
+Explanation: it deletes the rightmost bit because if its
+odd, then removing 1 makes if the number is even, then 
+removing 1 makes it odd, but anding it with an even number
+removes the 1 at the end
+
+not going to do the exervise cause I have no idea how to 
+make it faster using this knowledge
 */
 
 #include <stdio.h>
-#include <math.h>
 
-unsigned getbits(unsigned x, int p, int n);
-unsigned rightrot(unsigned x, int n);
+unsigned bitcount(unsigned x);
 
 int main(){
 
     int x = 143014; 
 
     //Expected result 143014 -> 107242
-    printf("%d -> %d\n", x, rightrot(x,5));
+    printf("number: %d \nnumber of 1s in its bit rep: %d", x, bitcount(x));
 
 } 
 
-unsigned getbits(unsigned x, int p, int n){
-    return (x >> (p+1-n)) & ~(~0 << n); //(x,4,3)
-}
-
-unsigned rightrot(unsigned x, int n){
-    /* Probably not the best implementation,
-    fun tho. would be worth seeing how this
-    is done properly in the future. */
-    int firstPlace = log2(x);
-    while(n > 0){
-        x = ((x & 1) << firstPlace) | (x >> 1);
-        n--;
-    }
-    return x;
+unsigned bitcount(unsigned x){
+    int b;
+    for(b = 0; x != 0; x >>= 1)
+        if(x & 01)
+            b++;
+    return b;
 }
 
 //2.9 Exercises : DONE
