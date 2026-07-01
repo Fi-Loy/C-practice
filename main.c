@@ -1,10 +1,14 @@
 //Note to next session:
 //Working on Chapter 4.3 External Variables
 /* Chapter 4.3 Example
+    Exersize 4-3: Add modulus operator and provision for 
+                  negative numbers
 */
+
 
 #include <stdio.h>
 #include <stdlib.h> //for atof()
+#include <math.h> //for fmod()
 
 #define MAXOP 100 //max size of operand or operator
 #define NUMBER '0' //signal that a number was found
@@ -40,6 +44,17 @@ main() {
                     push(pop() / op2);
                 else
                     printf("Error: zero divisor.\n");
+                break;
+            case '%':
+                //TODO: COMPLETE
+                op2 = pop();
+                if (op2 != 0.0)
+                    push(fmod(pop(), op2));
+                else
+                    printf("Error: domain error.");
+                break;
+            case '\n':
+                printf("\t%.8g\n", pop());
                 break;
             default:
                 printf("Error: unknown command %s\n", s);
@@ -84,9 +99,19 @@ int getop(char s[]){
     while ((s[0] = c = getch()) == ' ' || c == '\t')
         ;
     s[1] = '\0';
-    if (!isdigit(c) && c != '.')
+    if (!isdigit(c) && c != '.' && c != '-')
         return c; //not a number
     i = 0;
+    if (c == '-') { //negative number check
+        int nc = getch();
+        if (isdigit(nc))
+            s[++i] = c = nc;
+        else{
+            ungetch(nc);
+            return c;
+        }
+            
+    } 
     if (isdigit(c)) //collect integer part
         while (isdigit(s[++i] = c = getch()))
             ;
@@ -127,3 +152,4 @@ void ungetch(int c) {
 //3.5 reverse function
 //4.1 rewrite strindex(s,t)
 //4.2 rewrite atof to handle sci notation : DONE
+//4.3 add modulus and negative numbers : DONE
