@@ -1,8 +1,9 @@
 //Note to next session:
 //Working on Chapter 4.3 External Variables
-/* Chapter 4.3 Example
-    Exersize 4-3: Add modulus operator and provision for 
-                  negative numbers
+/* Chapter 4.4 Example
+    Add the commands to print the top elements of the stack
+    without popping, to duplicate it, and to swap the two 
+    elements. Add a command to clear the stack.
 */
 
 
@@ -16,9 +17,24 @@
 int getop(char []);
 void push(double);
 double pop(void);
+double peek(void);
+void clearStack(void);
+void swapTop(void);
 
 //reverse Polish calculator
 main() {
+    printf("Stack testing\n");
+    printf("pushing 12\n");
+    push(12);
+    printf("pushing 4\n");
+    push(4);
+    printf("peeking top of stack: %f\n", peek());
+    swapTop();
+    printf("swapping top elements and peaking %f\n", peek());
+    clearStack();
+    printf("peaking empty stack: %f\n", peek());
+
+    /*
     int type;
     double op2;
     char s[MAXOP];
@@ -62,12 +78,37 @@ main() {
         }
     }
     return 0;
+    */
 }
 
 #define MAXVAL 100  // max depth of val stack
 
 int sp = 0;         // next free stack position
 double val[MAXVAL];  // value statck
+
+//swapTop: swap the two top elements of the stack
+void swapTop(void) {
+    if (sp >= 2)
+        val[sp] = (val[sp-1] + val[sp-2]) - (val[sp-1] = val[sp-2]);
+    else 
+        printf("Error: Stack has less than 2 values");
+}
+
+//clearStack: clear and reset stack
+void clearStack(void) {
+    sp = 0;
+}
+
+//peak: see the top value without removing it
+double peek(void) {
+    
+    if (sp > 0)
+        return val[sp-1];
+    else {
+        printf("Error: stack empty\n");
+        return 0.0;
+    }
+}
 
 //push: push f onto value stack
 void push(double f) {
@@ -153,3 +194,4 @@ void ungetch(int c) {
 //4.1 rewrite strindex(s,t)
 //4.2 rewrite atof to handle sci notation : DONE
 //4.3 add modulus and negative numbers : DONE
+//4.4 add peek, swapping, and stack clearing methods: DONE
