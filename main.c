@@ -86,3 +86,6 @@ main() {
 //4.6 add commands for having variables
 //4.7 write a routine ungets(s)
 //4.10 rewrite the calculator to use getline
+//4.11 modify getop so that it doesnt use ungetch HINT: use an internal static variable
+//4.12 write a recursive version of itoa
+//4.13 write function that recursively reverses a string in place

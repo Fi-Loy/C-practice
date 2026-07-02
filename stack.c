@@ -2,8 +2,8 @@
 #include "calc.h"
 #define MAXVAL 100  // max depth of val stack
 
-int sp = 0;         // next free stack position
-double val[MAXVAL];  // value statck
+static int sp = 0;         // next free stack position
+static double val[MAXVAL];  // value statck
 
 //swapTop: swap the two top elements of the stack
 void swapTop(void) {
