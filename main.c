@@ -1,28 +1,16 @@
 //Note to next session:
-//Working on Chapter 4.3 External Variables
-/* Chapter 4.4 Example
-    Add the commands to print the top elements of the stack
-    without popping, to duplicate it, and to swap the two 
-    elements. Add a command to clear the stack.
-*/
-
+//Working on Chapter 4.5 Header Files
 
 #include <stdio.h>
 #include <stdlib.h> //for atof()
 #include <math.h> //for fmod()
+#include "calc.h"
 
-#define MAXOP 100 //max size of operand or operator
-#define NUMBER '0' //signal that a number was found
-
-int getop(char []);
-void push(double);
-double pop(void);
-double peek(void);
-void clearStack(void);
-void swapTop(void);
+#define MAXOP 100
 
 //reverse Polish calculator
 main() {
+    /* stack testing code
     printf("Stack testing\n");
     printf("pushing 12\n");
     push(12);
@@ -33,8 +21,8 @@ main() {
     printf("swapping top elements and peaking %f\n", peek());
     clearStack();
     printf("peaking empty stack: %f\n", peek());
-
-    /*
+    */
+    
     int type;
     double op2;
     char s[MAXOP];
@@ -78,107 +66,6 @@ main() {
         }
     }
     return 0;
-    */
-}
-
-#define MAXVAL 100  // max depth of val stack
-
-int sp = 0;         // next free stack position
-double val[MAXVAL];  // value statck
-
-//swapTop: swap the two top elements of the stack
-void swapTop(void) {
-    if (sp >= 2)
-        val[sp] = (val[sp-1] + val[sp-2]) - (val[sp-1] = val[sp-2]);
-    else 
-        printf("Error: Stack has less than 2 values");
-}
-
-//clearStack: clear and reset stack
-void clearStack(void) {
-    sp = 0;
-}
-
-//peak: see the top value without removing it
-double peek(void) {
-    
-    if (sp > 0)
-        return val[sp-1];
-    else {
-        printf("Error: stack empty\n");
-        return 0.0;
-    }
-}
-
-//push: push f onto value stack
-void push(double f) {
-    if (sp < MAXVAL)
-        val[sp++] = f;
-    else
-        printf("Error: stack full, can't push %g\n", f);
-}
-
-//pop: pop and return top value from stack
-double pop(void) {
-    if (sp > 0)
-        return val[--sp] ;
-    else {
-        printf("Error: stack empty\n");
-        return 0.0;
-    }
-}
-
-#include <ctype.h>
-
-int getch(void);
-void ungetch(int);
-
-//getop: get next character or numeric operand
-int getop(char s[]){
-    int i, c;
-
-    while ((s[0] = c = getch()) == ' ' || c == '\t')
-        ;
-    s[1] = '\0';
-    if (!isdigit(c) && c != '.' && c != '-')
-        return c; //not a number
-    i = 0;
-    if (c == '-') { //negative number check
-        int nc = getch();
-        if (isdigit(nc))
-            s[++i] = c = nc;
-        else{
-            ungetch(nc);
-            return c;
-        }
-            
-    } 
-    if (isdigit(c)) //collect integer part
-        while (isdigit(s[++i] = c = getch()))
-            ;
-    if (c == '.') //collect fraction part
-        while (isdigit(s[++i] = c = getch()))
-            ;
-    s[i] = '\0';
-    if (c != EOF)
-        ungetch(c);
-    return NUMBER;
-}
-
-#define BUFSIZE 100
-
-char buf[BUFSIZE]; // buffer for ungetch
-int bufp = 0; // next free position in buf
-
-int getch(void) { //get a (possibly pushed-back) character
-    return (bufp > 0) ? buf[--bufp] : getchar();
-}
-
-void ungetch(int c) {
-    if (bufp >= BUFSIZE)
-        printf("Ungetch: too many characters\n");
-    else
-        buf[bufp++] = c;
 }
 
 //2.9 Exercises : DONE
@@ -195,3 +82,7 @@ void ungetch(int c) {
 //4.2 rewrite atof to handle sci notation : DONE
 //4.3 add modulus and negative numbers : DONE
 //4.4 add peek, swapping, and stack clearing methods: DONE
+//4.5 add access to library functions sin, exp, and pow
+//4.6 add commands for having variables
+//4.7 write a routine ungets(s)
+//4.10 rewrite the calculator to use getline
