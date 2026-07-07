@@ -1,72 +1,58 @@
 //Note to next session:
-//Working on Chapter 4.5 Header Files
-
+//Working on Chapter 5.2 Pointers and Funcion Arguments
+#include <ctype.h>
 #include <stdio.h>
-#include <stdlib.h> //for atof()
-#include <math.h> //for fmod()
-#include "calc.h"
 
-#define MAXOP 100
+#define SIZE 1000
 
-//reverse Polish calculator
-main() {
-    /* stack testing code
-    printf("Stack testing\n");
-    printf("pushing 12\n");
-    push(12);
-    printf("pushing 4\n");
-    push(4);
-    printf("peeking top of stack: %f\n", peek());
-    swapTop();
-    printf("swapping top elements and peaking %f\n", peek());
-    clearStack();
-    printf("peaking empty stack: %f\n", peek());
-    */
-    
-    int type;
-    double op2;
-    char s[MAXOP];
+int n, array[SIZE], getint(int *);
+int getch(void);
+void ungetch(int);
 
-    while ((type = getop(s)) != EOF ) {
-        switch (type) {
-            case NUMBER:
-                push(atof(s));
-                break;
-            case '+':
-                push(pop() + pop());
-                break;
-            case '*':
-                push(pop() * pop());
-                break;
-            case '-':
-                op2 = pop();
-                push(pop() - op2);
-                break;
-            case '/':
-                op2 = pop();
-                if (op2 != 0.0)
-                    push(pop() / op2);
-                else
-                    printf("Error: zero divisor.\n");
-                break;
-            case '%':
-                //TODO: COMPLETE
-                op2 = pop();
-                if (op2 != 0.0)
-                    push(fmod(pop(), op2));
-                else
-                    printf("Error: domain error.");
-                break;
-            case '\n':
-                printf("\t%.8g\n", pop());
-                break;
-            default:
-                printf("Error: unknown command %s\n", s);
-                break;
-        }
-    }
-    return 0;
+int main() {
+    for (n = 0; n < SIZE && getint(&array[n]) != EOF; n++)
+    ;
+    for (n = 0; n < 10
+        ; n++)
+        printf("Index: %d, Val: %d\n", n, array[n]);
 }
+
+//getint: get next integer from input inot *pn
+int getint(int *pn) {
+    int c, sign;
+
+    while (isspace(c = getch())) //skip white space
+        ;
+    if (!isdigit(c) && c != EOF && c != '+' && c != '-') {
+        ungetch(c); // it is not a number
+        return 0;
+    }
+    sign = (c == '-') ? -1 : 1;
+    if (c == '+' || c == '-')
+        c = getch();
+    for (*pn = 0; isdigit(c); c = getch())
+        *pn = 10 * *pn + (c - '0');
+    *pn *= sign;
+    if (c != EOF)
+        ungetch(c);
+    return c;
+}
+
+#define BUFSIZE 100 
+char buf[BUFSIZE];    /* buffer for ungetch */ 
+int bufp = 0;         /* next free position in buf */ 
+
+int getch(void)  /* get a (possibly pushed-back) character */ 
+{ 
+    return (bufp > 0) ? buf[--bufp] : getchar(); 
+} 
+void ungetch(int c)   /* push character back on input */ 
+{ 
+    if (bufp >= BUFSIZE) 
+        printf("ungetch: too many characters\n"); 
+    else 
+        buf[bufp++] = c; 
+} 
 
 //2.9 Exercises : DONE
 //2.10 Exercises : PARTIALLY DONE
@@ -89,3 +75,4 @@ main() {
 //4.11 modify getop so that it doesnt use ungetch HINT: use an internal static variable
 //4.12 write a recursive version of itoa
 //4.13 write function that recursively reverses a string in place
+//5.2 write getfloat, What type does getflow return as its function value?
