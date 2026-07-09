@@ -1,58 +1,25 @@
 //Note to next session:
-//Working on Chapter 5.2 Pointers and Funcion Arguments
-#include <ctype.h>
-#include <stdio.h>
+//Working on Chapter 5.4: Address Arithmetic
 
-#define SIZE 1000
+#define ALLOCSIZE 10000
 
-int n, array[SIZE], getint(int *);
-int getch(void);
-void ungetch(int);
+static char allocbuf[ALLOCSIZE];
+static char* allocp = allocbuf;
 
-int main() {
-    for (n = 0; n < SIZE && getint(&array[n]) != EOF; n++)
-    ;
-    for (n = 0; n < 10
-        ; n++)
-        printf("Index: %d, Val: %d\n", n, array[n]);
-}
+char* alloc(int n) { // return pointer to n characters
 
-//getint: get next integer from input inot *pn
-int getint(int *pn) {
-    int c, sign;
-
-    while (isspace(c = getch())) //skip white space
-        ;
-    if (!isdigit(c) && c != EOF && c != '+' && c != '-') {
-        ungetch(c); // it is not a number
-        return 0;
+    if (allocbuf + ALLOCSIZE - allocp >= n) {
+        allocp += n;
+        return allocp - n;
     }
-    sign = (c == '-') ? -1 : 1;
-    if (c == '+' || c == '-')
-        c = getch();
-    for (*pn = 0; isdigit(c); c = getch())
-        *pn = 10 * *pn + (c - '0');
-    *pn *= sign;
-    if (c != EOF)
-        ungetch(c);
-    return c;
+    else 
+        return 0;
 }
 
-#define BUFSIZE 100 
-char buf[BUFSIZE];    /* buffer for ungetch */ 
-int bufp = 0;         /* next free position in buf */ 
-
-int getch(void)  /* get a (possibly pushed-back) character */ 
-{ 
-    return (bufp > 0) ? buf[--bufp] : getchar(); 
-} 
-void ungetch(int c)   /* push character back on input */ 
-{ 
-    if (bufp >= BUFSIZE) 
-        printf("ungetch: too many characters\n"); 
-    else 
-        buf[bufp++] = c; 
-} 
+void afree(char *p) { // free storage pointed to by p
+    if (p >= allocbuf && p < allocbuf + ALLOCSIZE)
+        allocp = p;
+}
 
 //2.9 Exercises : DONE
 //2.10 Exercises : PARTIALLY DONE
