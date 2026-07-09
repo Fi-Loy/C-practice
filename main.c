@@ -1,101 +1,104 @@
 //Note to next session:
-//Working on Chapter 5.5: Character Pointers and Functions
-/*
-    Exercise 5-3:   Write a pointer version of the function strcat that we showed in Chapter 2
-                    strcat(s,t) copies the string t to the end of s.
-*/
+//Working on Chapter 5.6: Pointer Arrays; Pointers to Pointers
 
 #include <stdio.h>
+#include <string.h>
+#include "alloc.c"
 
-//strcopy: copy t to s; array subscript version
-void strcopyA(char* s, char* t) {
-    int i;
-    i = 0;
-    while ((s[i] = t[i]) != '\0') 
-        i++;
-}
+#define MAXLINES 5000 //max # of lines to be sorted
 
-//strcopy: copy t to s; pointer version
-void strcopyP(char* s, char* t) {
-    int i;
-    i = 0;
-    while ((*s = *t) != '\0') {
-        s++;
-        t++;
+char *lineptr[MAXLINES]; //pointers to text lines
+
+int readlines(char* lineptr[], int nlines);
+void writelines(char* lineptr[], int nlines);
+
+void qsort(char* lineptr[], int left, int right);
+
+//sort input lines
+int main() {
+    int nlines;
+
+    if((nlines = readlines(lineptr, MAXLINES)) >= 0) {
+        qsort(lineptr, 0, nlines-1);
+        writelines(lineptr, nlines);
+        return 0;
+    }
+    else {
+        printf("Error: Input too big to sort\n");
+        return 1;
     }
 }
 
-//strcopy: copy t to s; pointer version 2
-void strcopy2(char* s, char* t) {
-    while ((*s++ = *t++) != '\0')
-        ;
+#define MAXLEN 1000 //max length of any input line
+int myGetline(char*, int);
+char* alloc(int);
+
+//readlines: read input lines
+int readlines(char* lineptr[], int maxlines) {
+    int len, nlines;
+    char* p, line[MAXLEN];
+
+    nlines = 0;
+    while ((len = myGetline(line, MAXLEN)) > 0)
+        if (nlines >= maxlines || (p = alloc(len)) == NULL)
+            return -1;
+        else {
+            line[len - 1] = '\0'; //delete newline
+            strcpy(p, line);
+            lineptr[nlines++] = p;
+        }
+    return nlines;
 }
 
-//strcopy: copy t to s; pointer version 3
-void strcopy3(char* s, char* t) {
-    while (*s++ = *t++)
-        ;
-}
-
-//strcmp: return <0 if s < t, 0 is s == t, >0 if s > t
-//Array version
-int strcompA(char* s, char* t) {
+//writelines: write output lines
+void writelines(char *lineptr[], int nlines){
     int i;
 
-    for (i = 0; s[i] == t[i]; i++) 
-        if (s[i] == '\0')
-            return 0;
-    return s[i] - t[i];
+    for (i = 0; i < nlines; i++) {
+        printf("%s\n", lineptr[i]);
+    }
 }
 
-//strcmp: return <0 if s < t, 0 is s == t, >0 if s > t
-//Pointer version
-int strcompP(char* s, char* t) {
-    for ( ; *s == *t; s++, t++)
-        if ( *s == '\0')
-            return 0;
-    return *s - *t;
+/* getline:  read a line into s, return length  */ 
+int myGetline(char s[],int lim) 
+{ 
+    int c, i; 
+    for (i=0; i < lim-1 && (c=getchar())!=EOF && c!='\n'; ++i) 
+        s[i] = c; 
+    if (c == '\n') { 
+        s[i] = c; 
+        ++i; 
+    } 
+    s[i] = '\0'; 
+    return i; 
 } 
-/* strcat:  concatenate t to end of s; s must be big enough */ 
-   char* strcat(char* s, char* t) 
-   { 
-    int i = 0;
-    while (*(s+i++)) /* find end of s */ 
-       ; 
-    i--;
-    while ((*(s+i) = *t++)) /* copy t */ 
-       i++;
-    return s; 
-   } 
 
-int main() {
-    //char string1[] = "when I was young, it seemed that life was so wonderful";
-    //char copy0[55];
-    //char copy1[55];
-    //char copy2[55];
-    //char copy3[55];
-    
+//qsort: sort v[left]...v[right] into increasing order
+void qsort(char* v[], int left, int right) {
+    int i, last; 
+    void swap(char* v[], int i, int j);
 
-    //strcopyA(copy0, string1);
-    //printf("%s\n", copy0);
-    //strcopyP(copy1, string1);
-    //printf("%s\n", copy1);
-    //strcopy2(copy2, string1);
-    //printf("%s\n", copy2);
-    //strcopy3(copy3, string1);
-    //printf("%s\n", copy3);
-
-    //char string2[] = "which is greater?";
-    //char string3[] = "this string, or above?";
-
-    //printf("%d\n", strcompA(string2, string3));
-    //printf("%d\n", strcompP(string2, string3));
-
-    //Testing Ex5.3
-    char cat1[] = "When I was young, ";
-    char cat2[] = "it seemed that life was so wonderful";
-    printf("%s\n", strcat(cat1, cat2));
+    if (left >= right)
+        return;
+    swap(v, left, (left + right)/2);
+    last = left; 
+    for (i = left + 1; i <= right; i++)
+        if (strcmp(v[i], v[left]) < 0 )
+            swap(v, ++last, i);
+    swap(v, left, last);
+    qsort(v, left, last-1);
+    qsort(v, last+1, right);
 }
+
+//swap: interchange v[i] and v[j]
+void swap(char* v[], int i, int j) {
+    char* temp;
+
+    temp = v[i];
+    v[i] = v[j];
+    v[j] = temp;
+}
+
 
 //2.9 Exercises : DONE
 //2.10 Exercises : PARTIALLY DONE
