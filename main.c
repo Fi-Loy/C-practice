@@ -1,5 +1,9 @@
 //Note to next session:
 //Working on Chapter 5.5: Character Pointers and Functions
+/*
+    Exercise 5-3:   Write a pointer version of the function strcat that we showed in Chapter 2
+                    strcat(s,t) copies the string t to the end of s.
+*/
 
 #include <stdio.h>
 
@@ -52,29 +56,45 @@ int strcompP(char* s, char* t) {
             return 0;
     return *s - *t;
 } 
+/* strcat:  concatenate t to end of s; s must be big enough */ 
+   char* strcat(char* s, char* t) 
+   { 
+    int i = 0;
+    while (*(s+i++)) /* find end of s */ 
+       ; 
+    i--;
+    while ((*(s+i) = *t++)) /* copy t */ 
+       i++;
+    return s; 
+   } 
 
 int main() {
-    char string1[] = "when I was young, it seemed that life was so wonderful";
-    char copy0[55];
-    char copy1[55];
-    char copy2[55];
-    char copy3[55];
+    //char string1[] = "when I was young, it seemed that life was so wonderful";
+    //char copy0[55];
+    //char copy1[55];
+    //char copy2[55];
+    //char copy3[55];
     
 
-    strcopyA(copy0, string1);
-    printf("%s\n", copy0);
-    strcopyP(copy1, string1);
-    printf("%s\n", copy1);
-    strcopy2(copy2, string1);
-    printf("%s\n", copy2);
-    strcopy3(copy3, string1);
-    printf("%s\n", copy3);
+    //strcopyA(copy0, string1);
+    //printf("%s\n", copy0);
+    //strcopyP(copy1, string1);
+    //printf("%s\n", copy1);
+    //strcopy2(copy2, string1);
+    //printf("%s\n", copy2);
+    //strcopy3(copy3, string1);
+    //printf("%s\n", copy3);
 
-    char string2[] = "which is greater?";
-    char string3[] = "this string, or above?";
+    //char string2[] = "which is greater?";
+    //char string3[] = "this string, or above?";
 
-    printf("%d\n", strcompA(string2, string3));
-    printf("%d\n", strcompP(string2, string3));
+    //printf("%d\n", strcompA(string2, string3));
+    //printf("%d\n", strcompP(string2, string3));
+
+    //Testing Ex5.3
+    char cat1[] = "When I was young, ";
+    char cat2[] = "it seemed that life was so wonderful";
+    printf("%s\n", strcat(cat1, cat2));
 }
 
 //2.9 Exercises : DONE
@@ -99,7 +119,6 @@ int main() {
 //4.12 write a recursive version of itoa
 //4.13 write function that recursively reverses a string in place
 //5.2 write getfloat, What type does getflow return as its function value?
-//5.3 write a pointer version of the function strcat shown in Chapter 2
+//5.3 write a pointer version of the function strcat shown in Chapter 2 (DONE)
 //5.4 write the function strend(s,t), which returns 1 is the string t occurs at the end of the string s, and 0 otherwise
-//5.5 write version of the library functions strncopy, strncat, and strncmp
 //5.6 rewrite functions from earlier chapter with pointers instead of indexing
