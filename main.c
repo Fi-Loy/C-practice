@@ -1,104 +1,46 @@
 //Note to next session:
-//Working on Chapter 5.6: Pointer Arrays; Pointers to Pointers
+//Working on Chapter 
 
 #include <stdio.h>
-#include <string.h>
-#include "alloc.c"
 
-#define MAXLINES 5000 //max # of lines to be sorted
+static char daytab[2][13] = {
+    {0,31,28,31,30,31,30,31,31,30,31,30,31},
+    {0,31,29,31,30,31,30,31,31,30,31,30,31},
+};
 
-char *lineptr[MAXLINES]; //pointers to text lines
+//day_of_year: set day of year from month & day
+int day_of_year(int year, int month, int day) {
+    int i, leap;
+    leap = year % 4 == 0 && year % 100 != 0 || year % 400 == 0;
+    for (i = 1; i < month; i++)
+        day += daytab[leap][i];
+    return day;
+}
 
-int readlines(char* lineptr[], int nlines);
-void writelines(char* lineptr[], int nlines);
+//month_day: set month, day from day of year
+void month_day(int year, int yearday, int *pmonth, int *pday) {
+    int i, leap;
+    leap = year % 4 == 0 && year % 100 != 0 || year % 400 == 0;
+    for (i = 1; yearday > daytab[leap][i]; i++)
+        yearday -= daytab[leap][i];
+    *pmonth = i;
+    *pday = yearday;
+}
 
-void qsort(char* lineptr[], int left, int right);
-
-//sort input lines
 int main() {
-    int nlines;
+    int month = 5; //May
+    int day = 22;
+    int year = 2000;
 
-    if((nlines = readlines(lineptr, MAXLINES)) >= 0) {
-        qsort(lineptr, 0, nlines-1);
-        writelines(lineptr, nlines);
-        return 0;
-    }
-    else {
-        printf("Error: Input too big to sort\n");
-        return 1;
-    }
+    int bday_of_year = day_of_year(year, month, day);
+    printf("Birthday as day of year: %d\n", bday_of_year);
+
+    int* pmonth;
+    int* pday;
+    month_day(year, bday_of_year, pmonth, pday);
+    printf("Convert back to month: %d, and day: %d\n", *pmonth, *pday);
+
 }
-
-#define MAXLEN 1000 //max length of any input line
-int myGetline(char*, int);
-char* alloc(int);
-
-//readlines: read input lines
-int readlines(char* lineptr[], int maxlines) {
-    int len, nlines;
-    char* p, line[MAXLEN];
-
-    nlines = 0;
-    while ((len = myGetline(line, MAXLEN)) > 0)
-        if (nlines >= maxlines || (p = alloc(len)) == NULL)
-            return -1;
-        else {
-            line[len - 1] = '\0'; //delete newline
-            strcpy(p, line);
-            lineptr[nlines++] = p;
-        }
-    return nlines;
-}
-
-//writelines: write output lines
-void writelines(char *lineptr[], int nlines){
-    int i;
-
-    for (i = 0; i < nlines; i++) {
-        printf("%s\n", lineptr[i]);
-    }
-}
-
-/* getline:  read a line into s, return length  */ 
-int myGetline(char s[],int lim) 
-{ 
-    int c, i; 
-    for (i=0; i < lim-1 && (c=getchar())!=EOF && c!='\n'; ++i) 
-        s[i] = c; 
-    if (c == '\n') { 
-        s[i] = c; 
-        ++i; 
-    } 
-    s[i] = '\0'; 
-    return i; 
-} 
-
-//qsort: sort v[left]...v[right] into increasing order
-void qsort(char* v[], int left, int right) {
-    int i, last; 
-    void swap(char* v[], int i, int j);
-
-    if (left >= right)
-        return;
-    swap(v, left, (left + right)/2);
-    last = left; 
-    for (i = left + 1; i <= right; i++)
-        if (strcmp(v[i], v[left]) < 0 )
-            swap(v, ++last, i);
-    swap(v, left, last);
-    qsort(v, left, last-1);
-    qsort(v, last+1, right);
-}
-
-//swap: interchange v[i] and v[j]
-void swap(char* v[], int i, int j) {
-    char* temp;
-
-    temp = v[i];
-    v[i] = v[j];
-    v[j] = temp;
-}
-
 
 //2.9 Exercises : DONE
 //2.10 Exercises : PARTIALLY DONE
