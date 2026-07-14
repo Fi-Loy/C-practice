@@ -1,24 +1,15 @@
 //Note to next session:
-//Working on Chapter 5.8 Initialization of Pointer Arrays
+//Working on Chapter 5.10 Command-line Arguments
 
 #include <stdio.h>
 
-//month name: return name of n-th month
-char *month_name(int n) {
-    static char* name[] = {
-        "Illegal month",
-        "January", "February", "March",
-        "April", "May", "June", 
-        "July", "August", "September",
-        "October", "November", "December"
-    };
+//echo command-line arguments; 2nd version
+main(int argc, char* argv[]) {
 
-    return (n < 1 || n > 12) ? name[0] : name[n];
-}
-
-int main() {
-    printf("The 5th month: %s\n", month_name(5));
-    printf("The 10th month: %s\n", month_name(10));
+    while (--argc > 0) 
+        printf("%s%s", *++argv, (argc > 1) ? " " : "");
+    printf("\n");
+    return 0;
 }
 
 //2.9 Exercises : DONE
