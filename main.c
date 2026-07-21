@@ -1,28 +1,80 @@
 //Note to next session:
-//Working on Chapter 6.1 Basics of Structures
+//Working on Chapter 6.2 Structures and Functions
 
 #include <stdio.h>
-#include <math.h>
+#define XMAX 360
+#define YMAX 200
 
 struct point {
     int x;
     int y;
 };
 
-struct point pt = {3, 4};
-struct point maxpt = {320, 200};
-
-struct rect{ 
+struct rect {
     struct point pt1;
     struct point pt2;
 };
 
-int main() {
-    printf("%d, %d\n", pt.x, pt.y);
+//makepoint: make a point from x and y components
+struct point makepoint(int x, int y) { 
+    struct point temp;
+    temp.x = x;
+    temp.y = y;
+    return temp;
+}
 
-    double dist;
-    dist = sqrt((double)pt.x * pt.x + (double)pt.y * pt.y);
-    printf("Point distance from origin: %f\n", dist);
+//addpoints: add two points
+struct point addpoint(struct point p1, struct point p2) {
+    p1.x += p2.x;
+    p1.y += p1.y;
+    return p1;
+}
+
+//ptInRect: return 1 if p in r, 0 elsewise
+int ptInRect(struct point p, struct rect r) {
+    return p.x >= r.pt1.x && p.x < r.pt2.x 
+        && p.y >= r.pt1.y && p.y < r.pt2.y;
+}
+
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
+
+//canonrect: cononicalize coordinates of rectangle
+struct rect canonrect(struct rect r) {
+    struct rect temp;
+
+    temp.pt1.x = min(r.pt1.x, r.pt2.x);
+    temp.pt1.y = min(r.pt1.y, r.pt2.y);
+    temp.pt2.x = max(r.pt1.x, r.pt2.x);
+    temp.pt2.y = max(r.pt1.y, r.pt2.y);
+
+    return temp;
+}
+
+int main() {
+    struct rect screen;
+    struct point middle;
+    struct point makepoint(int, int);
+
+    screen.pt1 = makepoint(0,0);
+    screen.pt2 = makepoint(XMAX, YMAX);
+    middle = makepoint((screen.pt1.x + screen.pt2.x)/2,
+                       (screen.pt1.y + screen.pt2.y)/2);
+
+    printf("I want to stop before origin is called\n");
+    struct point origin = {0,0}, *pp;
+    struct point corner = {9,9};
+    struct point sample = {3,5};
+    struct rect rect = {origin, corner};
+    rect = canonrect(rect);
+
+    printf("The point is inside the rectangle: %s\n", ptInRect(sample,rect) ? "true.": "false.");
+    printf("p1: (%d, %d)\n", sample.x, sample.y);
+    printf("p2: (%d, %d)\n", corner.x, corner.y);
+    printf("p1 + p2: (%d, %d)\n",(addpoint(sample, corner)).x, (addpoint(sample, corner)).y);
+
+    pp = &origin;
+    printf("origin is (%d, %d)\n", pp->x, pp->y);
 
 }
 
