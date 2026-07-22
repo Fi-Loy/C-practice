@@ -1,5 +1,5 @@
 //Note to next session:
-//Working on Chapter 6.3 Arrays of Structures
+//Working on Chapter 6.4 Pointers to Structures
 
 struct key {
     char *word;
@@ -26,40 +26,60 @@ struct key {
 #define MAXWORD 100
 
 int getword(char*, int);
-int binsearch(char*, struct key*, int);
+struct key* binsearch(char*, struct key*, int);
 
-//count C keywords
+//count C keywords: pointer version
 main() {
-    int n;
     char word[MAXWORD];
+    struct key *p;
 
     while (getword(word, MAXWORD) != EOF)
         if (isalpha(word[0]))
-            if ((n = binsearch(word, keytab, NKEYS)) >= 0)
-                keytab[n].count++;
-    for (n = 0; n < NKEYS; n++) 
-        if (keytab[n].count > 0)
-            printf("%4d %s\n", keytab[n].count, keytab[n].word);
+            if ((p = binsearch(word, keytab, NKEYS)) != NULL)
+                p->count++;
+    for (p = keytab; p < keytab + NKEYS; p++) 
+        if (p->count > 0)
+            printf("%4d %s\n", p->count, p->word);
     return 0;
 }
 
 //binsearch: find word in tab[0] ... tab[n-1]
-int binsearch (char* word, struct key tab[], int n) {
+struct key* binsearch (char* word, struct key tab[], int n) {
     int cond;
-    int low, high, mid;
-    
-    low = 0;
-    high = n - 1;
-    while (low <= high) {
-        mid = (low + high) /2;
-        if ((cond = strcmp(word, tab[mid].word)) < 0)
-            high = mid - 1;
+    struct key* low = &tab[0];
+    struct key* high = &tab[n];
+    struct key* mid;
+
+    while (low < high) {
+        mid = low + (high - low) /2;
+        if ((cond = strcmp(word, mid->word)) < 0)
+            high = mid;
         else if (cond > 0)
             low = mid + 1;
         else
             return mid;
     }
-    return -1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return NULL;
 }
 
 #include "hmHelpers.c"
