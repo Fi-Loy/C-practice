@@ -1,85 +1,33 @@
 //Note to next session:
-//Working on Chapter 6.6 Table Lookup
-
-#include <stdio.h>
-#include <string.h>
+//Working on Chapter 6.7 Typedef
 #include <stdlib.h>
+#define MAXLINES 1000
 
-struct nlist { //table entry
-    struct nlist* next; //next entry in train
-    char* name; //defined name
-    char* defn; //replacement text
-};
+typedef int Length;
 
-#define HASHSIZE 11
+Length len, maxlen;
+Length *lengths[];
 
-static struct nlist *hashtab[HASHSIZE];
+typedef char* String;
+String p, lineptr[MAXLINES], alloc(int);
+int strcmp(String, String);
+//p = (String) malloc(100);
 
-//hash: form hash value for string s
-unsigned hash(char* s) {
-    unsigned hashval;
+typedef struct tnode* Treeptr;
 
-    for (hashval = 0; *s != '\0'; s++) 
-        hashval = *s + 31 * hashval;
-    return hashval % HASHSIZE;
+typedef struct tnode {
+    char* word;
+    int count;
+    struct tnode* left;
+    struct tnode* right;
+} Treenode;
+
+Treeptr talloc(void) {
+    return (Treeptr)malloc(sizeof(Treenode));
 }
 
-//lookup: look for s in hashtab
-struct nlist* lookup(char* s) {
-    struct nlist* np;
-
-    for (np = hashtab[hash(s)]; np != NULL; np = np->next)
-        if (strcmp(s, np->name) == 0)
-            return np;
-    return NULL;
-}
-
-struct nlist* np;
-char* myStrdup(char*);
-
-//install: put (name, defn) in hashtab
-struct nlist* install(char* name, char* defn) {
-    struct nlist* np;
-    unsigned hashval;
-
-    if ((np = lookup(name)) == NULL) { //not found
-        np = (struct nlist*) malloc(sizeof(*np));
-        if (np == NULL || (np->name = myStrdup(name)) == NULL)
-            return NULL;
-        hashval = hash(name);
-        np->next = hashtab[hashval];
-        hashtab[hashval] = np;
-    }
-    else //already there
-        free((void*) np->defn); //free previous defn
-    if ((np->defn = myStrdup(defn)) == NULL)
-        return NULL;
-    return np;
-}
-
-//strdup: make a duplicate of s
-char* myStrdup(char* s) {
-    char* p;
-
-    p = (char *) malloc(strlen(s) + 1); //+1 for '\0'
-    if (p != NULL)
-        strcpy(p,s);
-    return p;
-}
-
-int main() {
-    char* name = "David";
-    char* defn1 = "Handsome Gent";
-    char* defn2 = "Immaculate Fellow";
-
-    install(name, defn1);
-    struct nlist* myDef = lookup("David");
-    printf("Every time you hear %s, what you should really hear is %s\n", myDef->name, myDef->defn );
-    install(name, defn2);
-    printf("Every time you hear %s, what you should really hear is %s\n", myDef->name, myDef->defn );
-
-    printf("It didn't shit itself :) \n");
-}
+typedef int (*PFI) (char*, char*);
+PFI strcmp, numcmp;
 
 //2.9 Exercises : DONE
 //2.10 Exercises : PARTIALLY DONE
