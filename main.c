@@ -1,33 +1,40 @@
 //Note to next session:
-//Working on Chapter 6.7 Typedef
-#include <stdlib.h>
-#define MAXLINES 1000
+//Working on Chapter 7.3 Variable Length Argument Lists
 
-typedef int Length;
+#include <stdarg.h>
 
-Length len, maxlen;
-Length *lengths[];
+//minprintf: minimal printf with variable argument list
+void minprintf(char* fmt, ...) {
+    va_list ap; //point to each unnamed arg in turn
+    char *p, *sval;
+    int ival;
+    double dval;
 
-typedef char* String;
-String p, lineptr[MAXLINES], alloc(int);
-int strcmp(String, String);
-//p = (String) malloc(100);
-
-typedef struct tnode* Treeptr;
-
-typedef struct tnode {
-    char* word;
-    int count;
-    struct tnode* left;
-    struct tnode* right;
-} Treenode;
-
-Treeptr talloc(void) {
-    return (Treeptr)malloc(sizeof(Treenode));
+    va_start(ap, fmt);
+    for (p = fmt; *p; p++) {
+        if(*p != '%') {
+            putchar(p);
+            continue;
+        }
+        switch (*++p) {
+            case 'd' :
+                ival = va_arg(ap, int);
+                printf("%d", ival);
+                break;
+            case 'f' :
+                dval = va_arg(ap, double);
+                break;
+            case 's' :
+                for (sval = va_arg(ap, char* ); *sval; sval++) 
+                    putchar(*sval);
+                break;
+            default :
+                putchar(*p);
+                break;
+        }
+    }
+    va_end(ap);
 }
-
-typedef int (*PFI) (char*, char*);
-PFI strcmp, numcmp;
 
 //2.9 Exercises : DONE
 //2.10 Exercises : PARTIALLY DONE
@@ -59,3 +66,5 @@ PFI strcmp, numcmp;
 //5.14 to 5.17 adding various command line flags for futher functionality
 //6.3 write a cross referencer that prints a list of all words in a document, and for each word, a list of the line numbers where it occurs
 //6.4 write a program that prints the distinct worrds in its input sorted into decreasing order of frequency
+//7.1 Write a program that converts upper to lower case or vice versa depending on the name in argv
+//7.3 Revise minprintf to handle more of the other facilities of printf
