@@ -22,6 +22,12 @@ void afree(char *p)  /* free storage pointed to by p */
         allocp = p; 
 } 
 
+//strcmp:copy t to s; pointer version
+void myStrcpy(char *s, char* t) {
+    while(*s++ = *t++)
+        ;
+}
+
 /* getline:  get line into s, return length */ 
 int myGetline(char s[], int lim) 
 { 
@@ -48,7 +54,7 @@ int readlines(char *lineptr[], int maxlines)
         else { 
 
             line[len-1] = '\0';  /* delete newline */ 
-            strcpy(p, line); 
+            myStrcpy(p, line); 
             lineptr[nlines++] = p; 
         } 
     return nlines; 

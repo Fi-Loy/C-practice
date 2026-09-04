@@ -1,39 +1,31 @@
 //Note to next session:
-//Working on Chapter 7.3 Variable Length Argument Lists
+//Working on Chapter 7.4 Formatted Input - Scanf
 
-#include <stdarg.h>
+#include <stdio.h>
+#include "hmHelpers.c"
+//main() { //rudimentary calculator
+//    double sum, v;
+//
+//    sum = 0;
+//    while(scanf("%lf", &v) == 1)
+//        printf("\t%.2f\n", sum += v);
+//    return 0;
+//}
 
-//minprintf: minimal printf with variable argument list
-void minprintf(char* fmt, ...) {
-    va_list ap; //point to each unnamed arg in turn
-    char *p, *sval;
-    int ival;
-    double dval;
+main() { //read date
 
-    va_start(ap, fmt);
-    for (p = fmt; *p; p++) {
-        if(*p != '%') {
-            putchar(p);
-            continue;
-        }
-        switch (*++p) {
-            case 'd' :
-                ival = va_arg(ap, int);
-                printf("%d", ival);
-                break;
-            case 'f' :
-                dval = va_arg(ap, double);
-                break;
-            case 's' :
-                for (sval = va_arg(ap, char* ); *sval; sval++) 
-                    putchar(*sval);
-                break;
-            default :
-                putchar(*p);
-                break;
-        }
+    char line[20];
+    char monthname[20];
+    int day, month, year;
+
+    while(myGetline(line, sizeof(line)) > 0) {
+        if(sscanf(line, "%d %s %d", &day, monthname, &year) == 3)
+            printf("valid: %s\n", line); // 25 Dec 1988 form
+        else if (sscanf(line, "%d/%d/%d", &month, &day, &year) == 3)
+            printf("valid: %s\n", line); //mm/dd/yy form
+        else
+            printf("Invalid: %s\n", line);
     }
-    va_end(ap);
 }
 
 //2.9 Exercises : DONE
@@ -68,3 +60,5 @@ void minprintf(char* fmt, ...) {
 //6.4 write a program that prints the distinct worrds in its input sorted into decreasing order of frequency
 //7.1 Write a program that converts upper to lower case or vice versa depending on the name in argv
 //7.3 Revise minprintf to handle more of the other facilities of printf
+//7.4 Write a private version of scanf similar to minprintf
+//5.5 Rewrite the postfix calculator from Chapter 4 to use scanf or sscanf
