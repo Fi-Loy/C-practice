@@ -1,31 +1,33 @@
 //Note to next session:
-//Working on Chapter 7.4 Formatted Input - Scanf
+//Working on Chapter 7.5 File Access
 
 #include <stdio.h>
-#include "hmHelpers.c"
-//main() { //rudimentary calculator
-//    double sum, v;
-//
-//    sum = 0;
-//    while(scanf("%lf", &v) == 1)
-//        printf("\t%.2f\n", sum += v);
-//    return 0;
-//}
 
-main() { //read date
+//cat: concatenate files, version 1
+int main(int argc, char* argv[]) {
+    FILE *fp;
+    void filecopy(FILE *, FILE *);
 
-    char line[20];
-    char monthname[20];
-    int day, month, year;
+    if(argc == 1) //no args: copy standard input
+        filecopy(stdin, stdout);
+    else
+        while(--argc > 0)
+            if ((fp = fopen(*++argv, "r")) == NULL) {
+                printf("cat: can't open %s\n", *argv);
+                return 1;
+            }
+            else {
+                filecopy(fp, stdout);
+                fclose(fp);
+            }
+    
+}
 
-    while(myGetline(line, sizeof(line)) > 0) {
-        if(sscanf(line, "%d %s %d", &day, monthname, &year) == 3)
-            printf("valid: %s\n", line); // 25 Dec 1988 form
-        else if (sscanf(line, "%d/%d/%d", &month, &day, &year) == 3)
-            printf("valid: %s\n", line); //mm/dd/yy form
-        else
-            printf("Invalid: %s\n", line);
-    }
+//filecopy: copy file ifp to file ofp
+void filecopy(FILE *ifp, FILE *ofp) {
+    int c;
+    while ((c = getc(ifp)) != EOF)
+        putc(c, ofp);
 }
 
 //2.9 Exercises : DONE
