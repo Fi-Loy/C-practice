@@ -1,32 +1,38 @@
 //Note to next session:
-//Working on Chapter 7.5 File Access
+//Working on Chapter 7.6 Error Handling - Stderr and Exit
 
 #include <stdio.h>
+#include <stdlib.h>
 
-//cat: concatenate files, version 1
-int main(int argc, char* argv[]) {
+//cat: concatenate files, version 2
+main(int argc, char* argv[]) {
     FILE *fp;
-    void filecopy(FILE *, FILE *);
+    void filecopy(FILE*, FILE*);
+    char *prog = argv[0];
 
-    if(argc == 1) //no args: copy standard input
+    if (argc == 1) //no args; copy standard input
         filecopy(stdin, stdout);
     else
-        while(--argc > 0)
+        while (--argc > 0)
             if ((fp = fopen(*++argv, "r")) == NULL) {
-                printf("cat: can't open %s\n", *argv);
-                return 1;
-            }
+                fprintf(stderr, "%s: can't open %s\n", prog, *argv);
+                exit(1);
+            } 
             else {
                 filecopy(fp, stdout);
                 fclose(fp);
             }
-    
+    if (ferror(stdout)) {
+        fprintf(stderr, "%s: error writing stdout\n", prog);
+        exit(2);
+    }
+    exit(0);
 }
 
 //filecopy: copy file ifp to file ofp
-void filecopy(FILE *ifp, FILE *ofp) {
+void filecopy(FILE *ifp, FILE* ofp) {
     int c;
-    while ((c = getc(ifp)) != EOF)
+    while((c = getc(ifp)) != EOF) 
         putc(c, ofp);
 }
 
